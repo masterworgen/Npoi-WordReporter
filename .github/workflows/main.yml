@@ -1,0 +1,31 @@
+name: Publish NPOI.WordReporter to NuGet
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore ./NPOI.WordReporter/NPOI.WordReporter.csproj
+
+    - name: Build
+      run: dotnet build ./NPOI.WordReporter/NPOI.WordReporter.csproj --configuration Release
+
+    - name: Pack
+      run: dotnet pack ./NPOI.WordReporter/NPOI.WordReporter.csproj --configuration Release --output ./nupkgs
+
+    - name: Publish to NuGet
+      run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
