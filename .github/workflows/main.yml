@@ -26,7 +26,8 @@ jobs:
 
     - name: Pack
       run: |
-        TAG_VERSION=${GITHUB_REF##*/}  # Извлекаем тег из GITHUB_REF
+        TAG_VERSION=${GITHUB_REF##*/}
+        VERSION=${TAG_VERSION#v}
         dotnet pack ./NPOI.WordReporter/NPOI.WordReporter.csproj --configuration Release --output ./nupkgs --version-suffix "$TAG_VERSION" --include-symbols --include-source
 
     - name: Publish to NuGet
